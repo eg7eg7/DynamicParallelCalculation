@@ -21,23 +21,28 @@ double heavy(int x, int y) {
 	//	sum += sin(exp(sin((double)i / HEAVY)));
 	//
 	//return sum;
-	return (double) (x + y) ;
+	return (double)(x + y);
 }
 
 void getNextJob(int *x_pointer, int *y_pointer, int *num_jobs_left, int N)
 {
 	int x = *x_pointer;
 	int y = *y_pointer;
+
 	y = (y + 1) % N;
 	if (y == 0)
 		x = x + 1;
+	*x_pointer = x;
+	*y_pointer = y;
 
-	printf("assigning %d and %d, jobs left: %d\n", x, y, *num_jobs_left);
 	(*num_jobs_left) = ((*num_jobs_left) - 1);
-}
+
+	printf("assigning %d and %d, jobs left:%d\n", x, y, *num_jobs_left);
+
+	}
 
 int main(int argc, char *argv[]) {
-	int x = 0, y = 0;
+	int x = -1, y = -1;
 	int N = 20;
 	double answer = 0, t1, t2, temp_ans;
 	int job[2];
@@ -65,7 +70,6 @@ int main(int argc, char *argv[]) {
 			job[1] = y;
 			MPI_Send(job, 2, MPI_INT, i, START_JOB_TAG, MPI_COMM_WORLD);
 			working_processes++;
-			num_jobs = num_jobs - 1;
 		}
 
 		while (num_jobs > 0 && working_processes > 0)
@@ -80,7 +84,7 @@ int main(int argc, char *argv[]) {
 				job[0] = x;
 				job[1] = y;
 				MPI_Send(job, 2, MPI_INT, processId, START_JOB_TAG, MPI_COMM_WORLD);
-				num_jobs = num_jobs - 1;
+			
 			}
 			else
 				working_processes--;
