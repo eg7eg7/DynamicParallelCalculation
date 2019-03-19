@@ -21,18 +21,18 @@ double heavy(int x, int y) {
 	//	sum += sin(exp(sin((double)i / HEAVY)));
 	//
 	//return sum;
-	return x + y;
+	return (double) (x + y) ;
 }
 
-void getNextJob(int *t, int *p, int *num_jobs_left, int N)
+void getNextJob(int *x_pointer, int *y_pointer, int *num_jobs_left, int N)
 {
-	int x = *t;
-	int y = *p;
+	int x = *x_pointer;
+	int y = *y_pointer;
 	y = (y + 1) % N;
 	if (y == 0)
 		x = x + 1;
 
-	printf("assigning %d and %d ", x, y);
+	printf("assigning %d and %d, jobs left: %d\n", x, y, *num_jobs_left);
 	(*num_jobs_left) = ((*num_jobs_left) - 1);
 }
 
@@ -52,13 +52,13 @@ int main(int argc, char *argv[]) {
 	if (myid == 0)
 	{
 		t1 = MPI_Wtime();
-		int i, num_assign,working_processes=0;
+		int i, num_assign, working_processes = 0;
 
 		num_assign = num_jobs;
 		//Assign all processes a job
 		for (i = 1; i < num_assign; i++)
 		{
-			if (i == (numprocs - 1))
+			if (i == (numprocs - 2))
 				break;
 			getNextJob(&x, &y, &num_jobs, N);
 			job[0] = x;
@@ -68,7 +68,7 @@ int main(int argc, char *argv[]) {
 			num_jobs = num_jobs - 1;
 		}
 
-		while (num_jobs > 0 && working_processes>0)
+		while (num_jobs > 0 && working_processes > 0)
 		{
 			//Waits for one of the processes to return with an answer, and assigns it a new job
 			MPI_Recv(&temp_ans, 1, MPI_DOUBLE, MPI_ANY_SOURCE, FINISH_JOB_TAG, MPI_COMM_WORLD, &status);
@@ -88,7 +88,7 @@ int main(int argc, char *argv[]) {
 
 		for (i = 1; i < numprocs; i++)
 		{
-			MPI_Send(0, 2, MPI_INT, i, TERMINATE_PROCESS_TAG, MPI_COMM_WORLD);
+			MPI_Send(job, 2, MPI_INT, i, TERMINATE_PROCESS_TAG, MPI_COMM_WORLD);
 		}
 
 		t2 = MPI_Wtime();
