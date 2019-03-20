@@ -1,3 +1,2 @@
 ﻿  icpi.cpp
-c:\parallelcomputation\initialmpiproject\initialmpiproject\initialmpiproject\initial\icpi.cpp(13): warning C4101: 'i': unreferenced local variable
-  Initial.vcxproj -> C:\ParallelComputation\InitialMPIproject\InitialMPIproject\InitialMPIproject\x64\Debug\Initial.exe
+  Initial.vcxproj -> C:\gitRepos\DynamicParallelCalculation\x64\Debug\Initial.exe
